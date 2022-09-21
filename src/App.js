@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [users, setUsers] = useState(false);
+  const [name, setName] = useState("Cihan");
+  const [avatar, setAvatar] = useState(false);
+
   const addPost = (data) => {
     const headers = new Headers();
     //  headers.append("Content-type", "application/json");
@@ -39,8 +42,37 @@ function App() {
       body: "Post İçeriği ",
     });
   }, []);
+
+  const submitHandle = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("avatar", avatar);
+    fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      body: formData,
+    });
+  };
   return (
     <>
+      <form onSubmit={submitHandle}>
+        <input
+          type="text"
+          name={name}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <br />
+        <input
+          type="file"
+          name="avatar"
+          onChange={(e) => setAvatar(e.target.files[0])}
+        />
+        <br />
+        <button type="submit" disabled={!name || !avatar}>
+          Kaydet
+        </button>
+      </form>
       <h1>User List</h1>
       <ul>
         {users && users.map((user) => <li key={user.id}>{user.name}</li>)}
